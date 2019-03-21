@@ -32,7 +32,7 @@ DataInputMark:
 
     cout << endl << endl << "Уравнение имеет вид: " << coefficient1 << "x^2 + " << coefficient2 << "x + " << freeTerm << " = 0" <<  endl;
 
-    short answer = 143;
+    short answer = 0;
     do
     {
         printf("\nДанные введены верно? \n 1 - Да  \n 2 - Нет \n 3 - Выход \n\n");
@@ -48,10 +48,6 @@ DataInputMark:
                 break;
             
             case 3:
-                return 0;
-                break;
-            case 143:                             // Вынужденный костыль(((
-                printf("Ошибка ввода!");
                 return 0;
                 break;
 
