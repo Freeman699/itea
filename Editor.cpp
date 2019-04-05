@@ -13,6 +13,7 @@ void InsertFunc(char *ptrStr, char *ptrBooferStr, int point, int strSize);
 void DeleteFunc(char *ptrStr, int point, int strSize);
 void CopyFunc(char *ptrStr, char *ptrBooferStr, int point, int strSize);
 void CutFunc(char *ptrStr, char *ptrBooferStr, int point, int strSize);
+void HelpFunc();
 
 constexpr unsigned int MAX_STR_SIZE = 100;
 
@@ -88,7 +89,7 @@ int main() {
                 break;
 
             case HELP:
-
+                HelpFunc();
                 break;
             
             default:
@@ -358,6 +359,18 @@ CutFuncInputMark:
         ptrStr[point] = ptrStr[tempPoint + i];
     }
     ptrStr[point] = '\0';
+}
 
 
+
+void HelpFunc() {
+
+    cout << "////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////" << endl
+         << "* Add - The function adds the text you entered at the cursor position." << endl
+         << "* Del - Removes text from the cursor position in the direction you choose. (Argument r - Right, l - Left is entered first, then the number of characters)" << endl
+         << "* Cpy - Copies characters starting from a pointer in a selected direction. (Argument r - Right, l - Left is entered first, then the number of characters)" << endl
+         << "* Cut - Cut characters starting from the pointer in the selected direction.(Argument r - Right, l - Left is entered first, then the number of characters)" << endl
+         << "* Ins - Inserts previously copied or cut text at the cursor position."  << endl
+         << "* Mov - Moves the cursor in the selected direction.                        (Argument r - Right, l - Left is entered first, then the number of characters)" << endl
+         << "////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////" << endl;
 }
