@@ -8,7 +8,7 @@ using std::cout;
 using std::cin;
 
 
-void BubbleSort(int *ptrArray, uint32_t size,bool compare);
+void BubbleSort(int *ptrArray, uint32_t size, std::function<bool(int, int)> func);
 void QuickSort(int *ptrArray,uint32_t left,uint32_t right);
 void PrintArray(int *ptrArray, uint32_t size);
 void BestArrayFill(int *ptrArray, uint32_t size);
@@ -16,12 +16,8 @@ void AvgArrayFill(int *ptrArray, uint32_t size);
 void WorstArrayFill(int *ptrArray, uint32_t size);
 void SelfArrayFill(int *ptrArray, uint32_t size);
 void ArrayCopy(int *ptrArray,int *new_ptrArray, uint32_t size);
+void Swap(int &first, int &second);
 
-auto LambdaSwap = [](int &first, int &second) {
-    int temp = first;
-    first = second;
-    second = temp;  
-};
 
 int main() {
 
@@ -32,79 +28,82 @@ int main() {
 
     auto badAllocCheck = [](int *ptr) {
         if(ptr) {
-            return;
+            return true;
         }
         else {
             cout << "Warning! Bad Allocation!" << endl;
-            exit(1);
+            return false;
         }
     };
 
     int *ptrArray = new int[size]; // Динамика поскольку заранее неизвестен размер массива.
-    badAllocCheck(ptrArray);
+    if(!badAllocCheck(ptrArray)) {
+        exit(1);
+    }
+
     enum {
-        SWITCH_EXIT = 0,
-        BEST_FILL,
+        
+        BEST_FILL = 1,
         AVG_FILL,
         WORST_FILL,
-        SELF_FILL
+        SELF_FILL,
+        SWITCH_EXIT
     };
-    short answer; 
-    do {
-        cout << "Which way would you like to fill your array?" << endl
-             << "1 - Best fill"                                << endl
-             << "2 - AVG fill"                                 << endl
-             << "3 - Worst fill"                               << endl
-             << "4 - By your self"                             << endl
-             << "0 - Exit"                                     << endl;  
-        cin >> answer;
-        cout << endl;
-
-        switch(answer)
-        {
-            case SWITCH_EXIT:
-                return 0;
-                break;
-            
-            case BEST_FILL:
-                BestArrayFill(ptrArray,size);
-                answer = 0;
-                break;
-
-            case AVG_FILL:
-                AvgArrayFill(ptrArray,size);
-                answer = 0;
-                break;
-
-            case WORST_FILL:
-                WorstArrayFill(ptrArray,size);
-                answer = 0;
-                break;
-            
-            case SELF_FILL:
-                SelfArrayFill(ptrArray,size);
-                answer = 0;
-                break;
-        
-            default:
-            cout << "Incorrect option! Please retry..." << endl;
-                break;
-        }    
-    }while(answer);
-
-    cout << "Unsorted array: " << endl;
-    PrintArray(ptrArray,size);
+    short answer;
+ArrayFillGotoMark:
+    cout << "Which way would you like to fill your array?" << endl
+         << "1 - Best fill"                                << endl
+         << "2 - AVG fill"                                 << endl
+         << "3 - Worst fill"                               << endl
+         << "4 - By your self"                             << endl
+         << "5 - Exit"                                     << endl;  
+    cin >> answer;
     cout << endl;
 
+    switch(answer)
+    {  
+        case BEST_FILL:
+            BestArrayFill(ptrArray,size);
+            break;
+
+        case AVG_FILL:
+            AvgArrayFill(ptrArray,size);
+            break;
+
+        case WORST_FILL:
+            WorstArrayFill(ptrArray,size);
+            break;
+        
+        case SELF_FILL:
+            SelfArrayFill(ptrArray,size);
+            break;
+        
+        case SWITCH_EXIT:
+            delete[] ptrArray;
+            return 0;
+            break;
+    
+        default:
+        cout << "Incorrect option! Please retry..." << endl;
+            goto ArrayFillGotoMark;
+            break;
+    }    
+
     int *ptrCopyArray = new int[size];
-    badAllocCheck(ptrCopyArray);
+    if(!badAllocCheck(ptrCopyArray)) {
+        delete[] ptrArray;
+        exit(1);
+    }
+
     ArrayCopy(ptrArray,ptrCopyArray,size);
 
+    time_t startTime,
+           endTime;
     enum {
             INCREAS = 1,
             DECREAS
         };
-    bool compare;
+
     cout << "What is BubbleSort order to sort the array?\n1 - Increasing\n2 - Decreasing" << endl;
 compareGotoMark:
     cin >> answer;
@@ -113,43 +112,43 @@ compareGotoMark:
     switch (answer)
     {
     case INCREAS:
-        compare = true;
+        startTime = clock();
+        BubbleSort(ptrArray, size, [](int first,int second){ return first > second; });
+        endTime = clock();
         break;
+
     case DECREAS:
-        compare = false;
+        startTime = clock();
+        BubbleSort(ptrArray, size, [](int first,int second){ return first < second; });
+        endTime = clock();
         break;
+
     default:
         cout << "Incorrect option! Please retry..." << endl;
         goto compareGotoMark;
         break;
     }
 
-    auto startTime = clock();
-    // cout << "Time before:" << startTime << endl;
-    BubbleSort(ptrArray,size,compare);
-    auto endTime = clock();
-    // cout << "Time after:" << startTime << endl;
-    cout << endl << "///////////////////////////////////////////////////////"
-         << endl << "////////////////////////Sorted array(BubbleSort)///////"
-         << endl << "///////////////////////////////////////////////////////"
-         << endl;
-    PrintArray(ptrArray,size);
     cout << "Bubble Sort time: " << (endTime - startTime) << endl << endl;
     
+
     startTime = clock();
     QuickSort(ptrCopyArray,0,size-1);
     endTime = clock();
-    cout << endl << "///////////////////////////////////////////////////////"
-         << endl << "////////////////////////Sorted array(QuickSort)///////"
-         << endl << "///////////////////////////////////////////////////////"
-         << endl;
-    // PrintArray(ptrCopyArray,size);
     cout << "Quick Sort time: " << (endTime - startTime) << endl << endl;
 
     delete []ptrArray;
     delete []ptrCopyArray;
 
     return 0;
+}
+
+
+
+void Swap(int &first, int &second) {
+    int temp = first;
+    first = second;
+    second = temp;  
 }
 
 
@@ -173,14 +172,18 @@ void ArrayCopy(int *ptrArray,int *new_ptrArray, uint32_t size) {
 void BestArrayFill(int *ptrArray, uint32_t size) {
 
     for(uint32_t i=0;i<size;++i){
-        ptrArray[i] = i;
+        int64_t k = 0;
+        ptrArray[i] = k;
+        ++k;
     }
 }
 
 void WorstArrayFill(int *ptrArray, uint32_t size) {
 
-    for(uint32_t i=size,j=0;i>0;--i,j++) { // Тут есть момент с --i но можно оставить и беззнаковй тип
-        ptrArray[j] = i;
+    for(uint32_t i=size,j=0;i>0;--i,j++) {
+        int64_t k=size;
+        ptrArray[j] = k;
+        --k;
     }
 }
 
@@ -200,24 +203,15 @@ void SelfArrayFill(int *ptrArray, uint32_t size) {
 }
 
 
-
-void BubbleSort(int *ptrArray, uint32_t size,bool compare) {
-
-    auto comp = [](int &first,int &second,bool compare){
-        if(compare) {
-            return first > second;
-        }else {
-            return first < second;
-        }
-    };
+void BubbleSort(int *ptrArray, uint32_t size, std::function<bool(int, int)> func) {
 
     for(uint32_t i=0; i < size; ++i) {
         uint32_t sortLine = size - i;
 
         for(uint32_t j=0; j < sortLine - 1; ++j) {
 
-            if(comp(ptrArray[j],ptrArray[j+1],compare)) {
-                LambdaSwap(ptrArray[j],ptrArray[j+1]);
+            if( func(ptrArray[j],ptrArray[j+1]) ) {
+                Swap(ptrArray[j],ptrArray[j+1]);
             }
         }
     } 
@@ -241,7 +235,7 @@ void QuickSort(int *ptrArray,uint32_t left,uint32_t right) {
         }
 
 		if (i <= j) {
-            LambdaSwap(ptrArray[i],ptrArray[j]);
+            Swap(ptrArray[i],ptrArray[j]);
 			++i;
 			--j;
 		}
