@@ -3,12 +3,6 @@
 #include <fstream>
 
 
-using std::endl;
-using std::cout;
-using std::cin;
-
-
-
 enum AsciiEnum {
     NumOfEngAlphChar = 26,
     NumOfArabicNums = 10,
@@ -83,7 +77,7 @@ void SymmetricDecryption(char outStr[],uint32_t cryptoKey) {
         return;
     }
 
-    char *tempBoofer = new char[strSize+1];  // std::nothrow не работает как аргумент new (прочитал что в новых версиях не бросает исключений) (+1 для нул терминатора)
+    char *tempBoofer = new char[strSize+1];  //(+1 для нул терминатора)
     if(!tempBoofer) {
         std::cout << " Warning! Bad allocation!" << std::endl;
         exit(1);
@@ -104,5 +98,5 @@ void SymmetricDecryption(char outStr[],uint32_t cryptoKey) {
 
     strcpy(outStr,tempBoofer);
 
-    delete[] --tempBoofer; // Иногда (крайне редко) выдавало segmentation fault и мне кажется что это было как-то связано с тем что я удалял указатель на чужую память
+    delete[] tempBoofer;
 }

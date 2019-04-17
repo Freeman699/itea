@@ -63,7 +63,6 @@ uint32_t CaesarCipher(char inputStr[]) {
             LambdaShift(CHARACTER_ENCR,charShift,ptrTempChar);
             inputStr[i] += Ascii_a_low;
         }
-        // Как по мне такой код более понятен при чтении(Это я к переносу else на новую строчку)
     }
 
     return cryptoKey;
