@@ -33,7 +33,6 @@ bool BiggestNumFunc(char FNum[],char SNum[]) {
             return SecondIsBigger;
         }
     }
-    cout << "Equal!" << endl;
     return EQUAL;
 }
 
@@ -93,7 +92,7 @@ int main() {
     cout << option_str << endl; 
 
     auto  NotAvailable = []() {
-        cout << "This feature is not yet implemented." << endl;
+        cout << "This feature is not implemented yet." << endl;
     };
 
 InputOptionAnswerGotoMark:
