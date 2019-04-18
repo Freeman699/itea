@@ -14,10 +14,10 @@ constexpr uint16_t message_size = UINT16_MAX;
 
 
 
-auto LambdaAnswer = []() {
+bool AnswerFunc() {
 
     int16_t answer;
-LambdaAnswerGotoMark:
+AnswerFuncGotoMark:
     cin >> answer;
     cout << endl;
     enum {
@@ -36,15 +36,13 @@ LambdaAnswerGotoMark:
         break;
     default:
         cout << "  Wrong option, please retry..." << endl;
-        goto LambdaAnswerGotoMark;
+        goto AnswerFuncGotoMark;
         break;
     }
-};
+}
 
 
-
-auto LambdaIsFileOpCheck = []() {
-
+bool IsFileOpCheck() {
         std::fstream filecheck;
         filecheck.open("Encrypted_message.txt");
 
@@ -54,21 +52,19 @@ auto LambdaIsFileOpCheck = []() {
         }else {
             return false;
         }
-};
-
+}
 
 
 bool IsFileExistEncCheckFuc() {
 
-     if(LambdaIsFileOpCheck()) {
+     if(IsFileOpCheck()) {
         cout << "  WARNING!\n  File with name \"Encrypted_message.txt\" was detected." << endl 
              <<"  The file will be replaced by a new one.\n  Want to continue?\n  1 - Yes\n  2 - No" << endl;
-        return LambdaAnswer();
+        return AnswerFunc();
     }else {
         return true;
     }
 }
-
 
 
 void EncryptFunc() {
@@ -86,7 +82,7 @@ EncryptFuncEnterMessageGotoMark:
     cout << endl;
 
     cout << "  Is this your message: " << inputStr << "\n  1 - Yes\n  2 - No" <<  endl;
-    if( !(LambdaAnswer()) ) {
+    if( !(AnswerFunc()) ) {
         goto EncryptFuncEnterMessageGotoMark;
     }
  
@@ -101,7 +97,7 @@ EncryptFuncEnterMessageGotoMark:
 
 bool IsFileExistDecCheckFunc() {
 
-     if( !(LambdaIsFileOpCheck()) ) {
+     if( !(IsFileOpCheck()) ) {
         cout << "  WARNING!\n  File with name \"Encrypted_message.txt\" was NOT detected." << endl;
         return false;
     }else {
@@ -138,6 +134,8 @@ void DecryptFunc() {
     cout << " Decrypded message: " << outStr << endl;
 
 }
+
+
 
 int main() {
 
