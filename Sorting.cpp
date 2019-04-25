@@ -18,6 +18,15 @@ void SelfArrayFill(int *ptrArray, uint32_t size);
 void ArrayCopy(int *ptrArray,int *new_ptrArray, uint32_t size);
 void Swap(int &first, int &second);
 
+auto badAllocCheck = [](int *ptr) {
+        if(ptr) {
+            return true;
+        }
+        else {
+            cout << "Warning! Bad Allocation!" << endl;
+            return false;
+        }
+};
 
 int main() {
 
@@ -26,17 +35,9 @@ int main() {
     cin >> size;
     cout << endl;
 
-    auto badAllocCheck = [](int *ptr) {
-        if(ptr) {
-            return true;
-        }
-        else {
-            cout << "Warning! Bad Allocation!" << endl;
-            return false;
-        }
-    };
+    
 
-    int *ptrArray = new int[size]; // Динамика поскольку заранее неизвестен размер массива.
+    int *ptrArray = new(std::nothrow) int[size]; // Динамика поскольку заранее неизвестен размер массива.
     if(!badAllocCheck(ptrArray)) {
         exit(1);
     }
@@ -89,7 +90,7 @@ ArrayFillGotoMark:
             break;
     }    
 
-    int *ptrCopyArray = new int[size];
+    int *ptrCopyArray = new(std::nothrow) int[size];
     if(!badAllocCheck(ptrCopyArray)) {
         delete[] ptrArray;
         exit(1);
@@ -153,7 +154,7 @@ void Swap(int &first, int &second) {
 
 
 void PrintArray(int *ptrArray, uint32_t size) {
-
+    if(!badAllocCheck(ptrArray)) return;
     for(uint32_t i=0;i<size;++i){
         cout << ptrArray[i] << ' ';
     }
@@ -162,7 +163,7 @@ void PrintArray(int *ptrArray, uint32_t size) {
 
 
 void ArrayCopy(int *ptrArray,int *new_ptrArray, uint32_t size) {
-
+    if(!badAllocCheck(ptrArray)) return;
     for(uint32_t i=0;i<size;++i) {
         new_ptrArray[i] = ptrArray[i];
     }
@@ -170,25 +171,23 @@ void ArrayCopy(int *ptrArray,int *new_ptrArray, uint32_t size) {
 
 
 void BestArrayFill(int *ptrArray, uint32_t size) {
-
+    if(!badAllocCheck(ptrArray)) return;
     for(uint32_t i=0;i<size;++i){
-        int64_t k = 0;
-        ptrArray[i] = k;
-        ++k;
+        int64_t k=0;
+        ptrArray[i] = k++;
     }
 }
 
 void WorstArrayFill(int *ptrArray, uint32_t size) {
-
+    if(!badAllocCheck(ptrArray)) return;
     for(uint32_t i=size,j=0;i>0;--i,j++) {
-        int64_t k=size;
-        ptrArray[j] = k;
-        --k;
+        int64_t k = size;
+        ptrArray[j] = k--;
     }
 }
 
 void AvgArrayFill(int *ptrArray, uint32_t size) {
-
+    if(!badAllocCheck(ptrArray)) return;
     srand(time(NULL));
     for(uint32_t i=0;i<size;++i) {
         ptrArray[i] = rand()%100;
@@ -196,7 +195,7 @@ void AvgArrayFill(int *ptrArray, uint32_t size) {
 }
 
 void SelfArrayFill(int *ptrArray, uint32_t size) {
-
+    if(!badAllocCheck(ptrArray)) return;
     for(uint32_t i=0;i<size;++i) {
         cin >> ptrArray[i];
     }
@@ -204,7 +203,7 @@ void SelfArrayFill(int *ptrArray, uint32_t size) {
 
 
 void BubbleSort(int *ptrArray, uint32_t size, std::function<bool(int, int)> func) {
-
+    if(!badAllocCheck(ptrArray)) return;
     for(uint32_t i=0; i < size; ++i) {
         uint32_t sortLine = size - i;
 
@@ -219,7 +218,7 @@ void BubbleSort(int *ptrArray, uint32_t size, std::function<bool(int, int)> func
 
 
 void QuickSort(int *ptrArray,uint32_t left,uint32_t right) {
-
+    if(!badAllocCheck(ptrArray)) return;
     int i = left,
         j = right;
 

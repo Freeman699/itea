@@ -11,6 +11,7 @@ using std::cout;
 using std::cin;
 
 constexpr uint16_t message_size = UINT16_MAX;
+constexpr const char *NameOfFile = "Encrypted_message.txt";
 
 
 
@@ -44,7 +45,7 @@ AnswerFuncGotoMark:
 
 bool IsFileOpCheck() {
         std::fstream filecheck;
-        filecheck.open("Encrypted_message.txt");
+        filecheck.open(NameOfFile);
 
         if(filecheck.is_open()) {
             filecheck.close();
@@ -77,7 +78,7 @@ void EncryptFunc() {
 
 EncryptFuncEnterMessageGotoMark:
     cout << "  Enter your message: ";
-    cin.ignore();                       // Хотелось бы немного подробнее об этой сЫтуацЫЫ с cin.ignore() перед cin.getline(inputStr,message_size) так сказатб
+    cin.ignore();
     cin.getline(inputStr,message_size); 
     cout << endl;
 
@@ -112,7 +113,7 @@ void DecryptFunc() {
         return;
     }
 
-    std::ifstream inFile("Encrypted_message.txt");
+    std::ifstream inFile(NameOfFile);
 
     char outStr[message_size] {};
     uint32_t cryptoKey;

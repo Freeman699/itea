@@ -13,9 +13,7 @@ constexpr uint32_t MAX_SIZE = 100000;
 bool DigitCheckFunc(char String[]) {
 
     for(uint32_t i=0; String[i] != '\0' ;++i) {
-        bool flag = isdigit(String[i]);
-
-        if(!flag) {
+        if(!isdigit(String[i])) {
             return true;
         }
     }
@@ -28,8 +26,7 @@ bool BiggestNumFunc(char FNum[],char SNum[]) {
     for(uint32_t i=0;i < strlen(FNum); ++i) {
         if(FNum[i] > SNum[i]) {
             return FirstIsBigger;
-        }
-        if(FNum[i] < SNum[i]) {
+        }else if(FNum[i] < SNum[i]) {
             return SecondIsBigger;
         }
     }
@@ -68,16 +65,15 @@ int main() {
 
     uint32_t firstNumLength = strlen(FirstInputString),
              secondNumLength= strlen(SecondInputString);    
-    bool BiggestNum;
+    bool is_second_bigger_then_first_num;
     char *Result = nullptr;
-    enum {FIRST,SECOND};
 
     if(firstNumLength > secondNumLength) {
-        BiggestNum = FIRST;
+        is_second_bigger_then_first_num = false;
     }else if(firstNumLength < secondNumLength) {
-        BiggestNum = SECOND;
+        is_second_bigger_then_first_num = true;
     }else {
-        BiggestNum = BiggestNumFunc(FirstInputString,SecondInputString);
+        is_second_bigger_then_first_num = BiggestNumFunc(FirstInputString,SecondInputString);
     }
 
     const char *option_str = R"(Please select a number operation:
@@ -101,7 +97,7 @@ InputOptionAnswerGotoMark:
     switch (answer)
     {
         case SUM:
-            if(BiggestNum == FIRST) {
+            if(!is_second_bigger_then_first_num) {
                Result = SumFunc(FirstInputString,SecondInputString);
             }else {
                Result = SumFunc(SecondInputString,FirstInputString);
@@ -110,7 +106,7 @@ InputOptionAnswerGotoMark:
             break;
         
         case DIFFERENCE:
-            if(BiggestNum == FIRST) {
+            if(!is_second_bigger_then_first_num) {
                 Result = DiffFunc(FirstInputString,SecondInputString);
             }else {
                 resultLessThanZero = true;

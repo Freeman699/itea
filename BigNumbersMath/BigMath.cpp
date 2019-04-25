@@ -1,4 +1,3 @@
-#include <iostream>
 #include <cstring>
 
 char *SumFunc(char FNum[],char SNum[]) {
@@ -8,7 +7,7 @@ char *SumFunc(char FNum[],char SNum[]) {
 
     for(int k = strlen(SNum) - 1 ;k >= 0;--i, --k) {   
 
-        uint32_t tempSum = 0,
+        unsigned int tempSum = 0,
                  firstNum = FNum[i] - '0',
                  secondNum = SNum[k] - '0';
 
@@ -31,7 +30,7 @@ char *SumFunc(char FNum[],char SNum[]) {
         if(i>0) {
             for( ; i >=0; --i) {   
 
-                uint32_t  Num = FNum[i] - '0';
+                unsigned int  Num = FNum[i] - '0';
 
                 if(digit) {
                     ++Num;
@@ -59,11 +58,10 @@ char *SumFunc(char FNum[],char SNum[]) {
 char*  DiffFunc(char FNum[],char SNum[]) {
     
     bool digit = false;
-    int i = strlen(FNum) - 1;
 
-     for(int k = strlen(SNum) - 1 ;i >= 0;--i, --k) {   
+     for(int k = strlen(SNum)-1, i = strlen(FNum)-1;i >= 0;--i, --k) {   
 
-        int32_t tempDiff = 0,
+        int tempDiff = 0,
                 firstNum = FNum[i] - '0',
                 secondNum;
         if(k >=0) {
@@ -87,14 +85,14 @@ char*  DiffFunc(char FNum[],char SNum[]) {
         FNum[i] = tempDiff + '0';
     }
 
-    uint32_t numOfZero=0;
-    for(i=0;FNum[i] <= '0';++i) {
+    unsigned int numOfZero=0;
+    for(unsigned int i=0;FNum[i] <= '0';++i) {
         ++numOfZero;
     }
 
     if(numOfZero>0) {
-        uint32_t shift = (strlen(FNum) - numOfZero);
-        memmove(&FNum[0],&FNum[numOfZero],shift*sizeof(char));
+        unsigned int shift = (strlen(FNum) - numOfZero);
+        memmove(FNum,FNum+numOfZero,shift*sizeof(char));
         FNum[shift] = '\0';
     }
 

@@ -77,25 +77,24 @@ void SymmetricDecryption(char outStr[],uint32_t cryptoKey) {
         return;
     }
 
-    char *tempBoofer = new char[strSize+1];  //(+1 для нул терминатора)
+    char *tempBoofer = new(std::nothrow) char[strSize+1];  //(+1 для нул терминатора)
     if(!tempBoofer) {
         std::cout << " Warning! Bad allocation!" << std::endl;
         exit(1);
     }
 
     uint32_t linesNum = ((cryptoKey%5) + 2), columnsNum = (strSize/linesNum);
-    for(uint32_t i=0; i < columnsNum; ++i) { 
-
+    for(uint32_t i=0,k=0; i < columnsNum; ++i) {
         for (uint32_t j = 0,count = 0; count < linesNum; ++j,++count) {
-            static uint32_t k = 0;
             tempBoofer[k++] = outStr[j * columnsNum + i];
         }
     }
-
-    for(uint32_t j=columnsNum*linesNum; outStr[j] != '\0'; ++j) {
+    
+    uint32_t j=columnsNum*linesNum;
+    for(; outStr[j] != '\0'; ++j) {
         tempBoofer[j] = outStr[j];
     }
-
+    tempBoofer[j]='\0';
     strcpy(outStr,tempBoofer);
 
     delete[] tempBoofer;
