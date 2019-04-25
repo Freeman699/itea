@@ -8,11 +8,18 @@ using std::endl;
 
 constexpr int MAX_SIZE_OF_ARRAY = 50;
 
-bool IsOdd(int num);
-
-int main(void) {
+bool IsOdd(int num) {
     
-    // int numArray [MAX_SIZE_OF_ARRAY];
+    if(num & 1) {
+        return true;
+    }
+
+    return false;
+}
+
+
+int main() {
+    
     int amNum;
 
 AmountOfNumbersMark:
@@ -41,11 +48,3 @@ AmountOfNumbersMark:
     return 0;
 }
 
-bool IsOdd(int num) {
-    
-    if(num & 1) {
-        return true;
-    }
-
-    return false;
-}

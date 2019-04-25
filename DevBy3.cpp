@@ -1,14 +1,11 @@
 #include <iostream>
-#include <string>
 #include <cstring>
-#include <cstdlib>
-#include <cmath>
 
 using std::endl;
 using std::cin;
 using std::cout;
 
-int main(void) {
+int main() {
 
     char numString[100];
     cout << "Please input your numbers: ";
@@ -20,7 +17,7 @@ int main(void) {
     
     int sum=0;
 
-    for(int i=strlen(numString)-1; i >= 0 ;i--) {
+    for(uint32_t i=0;numString[i] != '\0';++i) {
         if(numString[i] != ' ') {
             sum += numString[i] - '0';
         }
@@ -29,11 +26,9 @@ int main(void) {
     
     if((sum%3) == 0) {
         cout << "Your number can be divided by 3";
-    }
-    else {
+    }else {
         cout << "Your numver can not be divided by 3";
     }
-
 
     return 0;
 }

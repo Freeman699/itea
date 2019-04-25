@@ -4,14 +4,14 @@ using std::endl;
 using std::cin;
 using std::cout;
 
-int main(void) {
+int main() {
  
     cout << "Input your number: ";
-    int num;
+    int32_t num;
     cin >> num;
 
     cout << endl << "Input bit number: ";
-    int bitNum;
+    uint32_t bitNum;
     cin >> bitNum;
     cout << endl;
 

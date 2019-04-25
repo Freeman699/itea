@@ -4,7 +4,7 @@ using std::endl;
 using std::cin;
 using std::cout;
 
-int main(void) {
+int main() {
 
     cout << "Input your number: ";
     int num;
@@ -16,16 +16,10 @@ int main(void) {
     }
 
     int bestDivisor = 1;
+    int32_t middle = num/2;
 
-    for(int t=0, k = 0; t < num/2; t++) {
-
-        cout << endl << "t=" << t;
-
+    for(uint32_t t=1; t <= middle; ++t) {
         if(num%t == 0) {            
-                                    /*
-                                     * Проблемма с оператором %
-                                     * Не заходит в цикл ни разу если присуцтвует %t
-                                    */
             bestDivisor = t;
         }    
     }

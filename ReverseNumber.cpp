@@ -21,28 +21,23 @@ int main(void) {
 
     int reverseNum = 0;
     unsigned short t = numOfDigits(num);
-    do {
+    
 
-        /*
-            * Проблема при первой итерации в цикле
-            * Любое число которое заканчивается не на ноль при первой итерации теряет единицу
-            * 
-            * Пример
-            * 123
-            * При первой итерации берём число 3 и умножаем на 10^2
-            * Должно получится число 300
-            * На деле 299
-            * 
-            * После первой итерации все работает как надо
-        */
+    while(num) {
 
-        reverseNum += (num%10)*(pow(10,t));
+        int32_t numTen = num%10;
+        int32_t numOfDigitsPow = pow(10,t);
+        
         cout << "number%10: " << (num%10) << endl; 
         cout << "10^t: " << pow(10,t) << endl;
+
+        // reverseNum += numTen * numOfDigitsPow;
+        reverseNum += (num%10)*(pow(10,t));
+        
         t--;
         num /= 10;
         cout << "number: " << reverseNum << endl;
-    } while(num);
+    }
 
     if(negative) {
         reverseNum = -reverseNum;
