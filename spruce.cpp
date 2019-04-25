@@ -1,7 +1,7 @@
 #include <cstdio>
 #include <iostream>
 
-int main(void)
+int main()
 {   
     int numOfSymbols;
     char chosenSymbol;
@@ -13,24 +13,24 @@ int main(void)
    std::cin >> numOfSymbols;
    
 
-    for(int blocsNum = 3; blocsNum <= numOfSymbols; blocsNum = blocsNum+1) // Ёлочка
+    for(int blocsNum = 3; blocsNum <= numOfSymbols; blocsNum += 1) // Ёлочка
     {
-       for(int linesNum = blocsNum/2; linesNum<=blocsNum; linesNum++) //Вид ёлки можно изменить поменяв значение (от 1.5 до заданного числа) знаменателя при инициализации linesNum 
+       for(int linesNum = blocsNum/2; linesNum<=blocsNum; ++linesNum) //Вид ёлки можно изменить поменяв значение (от 1.5 до заданного числа) знаменателя при инициализации linesNum 
        {
            printf("\n");
-           for(int spacesNum = numOfSymbols; spacesNum >= linesNum; spacesNum--) printf(" ");
-           for(int symbolsNum = 1; symbolsNum <= ((linesNum*2)-1); symbolsNum++) printf("%c",chosenSymbol);
+           for(int spacesNum = numOfSymbols; spacesNum >= linesNum; --spacesNum) printf(" ");
+           for(int symbolsNum = 1; symbolsNum <= ((linesNum*2)-1); ++symbolsNum) printf("%c",chosenSymbol);
        }
     }
     printf("\n");
 
-    for(int trunkHeight = numOfSymbols/2; trunkHeight < numOfSymbols; trunkHeight++) // Высота ствола ёлочки (от 1 до заданного числа)
+    for(int trunkHeight = numOfSymbols/2; trunkHeight < numOfSymbols; ++trunkHeight) // Высота ствола ёлочки (от 1 до заданного числа)
     {
-        for(int spacesNum = 1; spacesNum < numOfSymbols; spacesNum++) printf(" ");
+        for(int spacesNum = 1; spacesNum < numOfSymbols; ++spacesNum) printf(" ");
         printf("|||\n");
     }
 
-    for(int spacesNum = 1; spacesNum < numOfSymbols-1; spacesNum++) printf(" ");
+    for(int spacesNum = 1; spacesNum < numOfSymbols-1; ++spacesNum) printf(" ");
     printf("/|||\\");
 
 

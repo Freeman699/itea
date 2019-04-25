@@ -10,7 +10,7 @@ void RootSearch(float coefficient1, float coefficient2, float freeTerm);
 void OneRootSearch(float coefficient2, float freeTerm);
 void RootSearchComplex(float coefficient1,float coefficient2,float freeTerm);
 
-int main(void)
+int main()
 {
     setlocale(LC_ALL, "Russian");
     
@@ -22,13 +22,20 @@ int main(void)
     printf("\nКвадратное уравнение имеет вид: ax^2 + bx + c = 0\n");
 
 
+    enum {
+        Correct_Input = 1,
+        Incorrect_Input,
+        Exit_Prog
+    };
+
+
 DataInputMark:
     printf("\nВведите коэффициент a:");  
     cin >> coefficient1;
     printf("\nВведите коэффициент b:");
     cin >> coefficient2;
     printf("\nВведите свободный член c:");
-    cin >> freeTerm;  
+    cin >> freeTerm; 
 
     cout << endl << endl << "Уравнение имеет вид: " << coefficient1 << "x^2 + " << coefficient2 << "x + " << freeTerm << " = 0" <<  endl;
 
@@ -40,14 +47,14 @@ DataInputMark:
 
         switch (answer)
         {
-            case 1:
+            case Correct_Input:
                 break;
 
-            case 2:
+            case Incorrect_Input:
                 goto DataInputMark; // line 21
                 break;
             
-            case 3:
+            case Exit_Prog:
                 return 0;
                 break;
 
@@ -61,20 +68,19 @@ DataInputMark:
 
 
 
-    if(coefficient1 == 0) OneRootSearch(coefficient2, freeTerm);
+    if(coefficient1 == 0) {
+        OneRootSearch(coefficient2, freeTerm);
 
-    else if(pow(coefficient2,2) < (4*coefficient1*freeTerm))
-    {
+    }else if(pow(coefficient2,2) < (4*coefficient1*freeTerm)) {
         short complexFlag = 0;
-        printf("Уравнение не имеет вещественных корней\n Хотите продолжить?\n 1 - Да \n");
+        printf("Уравнение не имеет вещественных корней\n Хотите продолжить?\n 1 - Да \n 2 - Нет");
         cin >> complexFlag;
-        if(complexFlag == 1)
-        {
+        if(complexFlag == 1) {
             RootSearchComplex(coefficient1,coefficient2,freeTerm);
         }
+    }else {
+        RootSearch(coefficient1,coefficient2,freeTerm);
     }
-
-    else RootSearch(coefficient1,coefficient2,freeTerm);
 
     return 0;
 }
@@ -86,8 +92,6 @@ void RootSearch(float coefficient1, float coefficient2, float freeTerm)
     double realDiscriminant = sqrt(pow(coefficient2,2) - 4*coefficient1*freeTerm);
     cout << endl << "Первый корень: " << ((-coefficient2 + realDiscriminant) / (2*coefficient1)) << endl
          <<         "Второй корень: " << ((-coefficient2 - realDiscriminant) / (2*coefficient1)) << endl;
-
-    return;
 }
 
 
@@ -99,8 +103,6 @@ void OneRootSearch(float coefficient2, float freeTerm)
         printf("Корнями данного уравнения являются любые 2 комплексных числа");
     }
     else cout << endl << "Корень данного уравнения: " << (-freeTerm  / coefficient2) << endl;
-
-    return;
 }
 
 
@@ -112,8 +114,6 @@ void RootSearchComplex(float coefficient1,float coefficient2,float freeTerm)
 
     cout << endl << "Первый корень: " << realRootPart << " + " << (complexDiscriminant/(2*coefficient1)) << "i" << endl
          <<         "Второй корень: " << realRootPart << " - " << (complexDiscriminant/(2*coefficient1))  << "i" << endl;
-
-    return;
 }
 
 

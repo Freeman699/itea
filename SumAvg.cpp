@@ -1,16 +1,18 @@
 #include <cstdio>
 #include <iostream>
 #include <cstring>
-#define SIZE_OF_STRING 41
+
+constexpr int32_t SIZE_OF_STRING = 500;
 
 
-int main(void)
+int main()
 {
     char tempString[SIZE_OF_STRING];
 
 InputStringMark:
     std::cout << "Input your number: ";
-    std::cin.getline(tempString,SIZE_OF_STRING);
+    std::cin >> tempString;
+    std::cout << std::endl;
 
     if(strlen(tempString) == SIZE_OF_STRING-1)
     {

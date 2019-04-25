@@ -2,7 +2,7 @@
 #include <cmath>
 #include <iostream>
 
-int main(void)
+int main()
 {
     std::cout << "Input your number: ";
     int decNum,counter = 0;
