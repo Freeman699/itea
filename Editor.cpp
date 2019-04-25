@@ -5,7 +5,7 @@ using std::cout;
 using std::cin;
 
 void PrintStrFunc(char *ptrStr, int point);
-int MStrlen(char *ptrStr);
+uint32_t MStrlen(char *ptrStr);
 bool CheckFunc(char *ptrStr, int strSize);
 int MoveFunc(char *ptrStr, int point, int strSize);
 void AddFunc(char *ptrStr, char *ptrBooferStr, int point, int strSize);
@@ -22,19 +22,20 @@ int main() {
     cout << endl << " /Simple text editor\\" << endl;
 
     short answer;
-    int point = 0, strSize = 0;
-    char *ptrStr = new char[MAX_STR_SIZE];
-    char *ptrBooferStr = new char[MAX_STR_SIZE];
+    int point = 0;
+    uint32_t strSize = 0;
+    char *ptrStr = new char[MAX_STR_SIZE] {'\0'};
+    char *ptrBooferStr = new char[MAX_STR_SIZE] {'\0'};
     ptrStr[0] = '\0';
     enum {
-        EXIT = 0,
-        ADD,
+        ADD = 1,
         DEL,
         CPY,
         CUT,
         INS,
         MOV,
-        HELP
+        HELP,
+        EXIT
     };
 
     do {
@@ -45,7 +46,7 @@ int main() {
              << " *********************" << endl
              << " * 1 - Add 6 - Mov   *" << endl
              << " * 2 - Del 7 - Help  *" << endl
-             << " * 3 - Cpy 0 - Exit  *" << endl
+             << " * 3 - Cpy 8 - Exit  *" << endl
              << " * 4 - Cut           *" << endl
              << " * 5 - Ins           *" << endl
              << " *********************" << endl;
@@ -59,10 +60,7 @@ int main() {
 
         switch (answer)
         {
-            case EXIT:
-                delete []ptrStr;
-                return 0;
-                break;
+           
             
             case ADD:
                 AddFunc(ptrStr,ptrBooferStr,point,strSize);
@@ -91,7 +89,12 @@ int main() {
             case HELP:
                 HelpFunc();
                 break;
-            
+
+            case EXIT:
+                delete []ptrStr;
+                return 0;
+                break;
+
             default:
                 cout << "Wrong option! Please retry..." << endl;
                 break;
@@ -108,22 +111,28 @@ int main() {
 
 void PrintStrFunc(char *ptrStr,int point) {
 
-    cout << endl << "String:\"" << ptrStr << "\"" << endl;
+    if(!ptrStr){
+        return;
+    }
 
-    for(int i = 0; i < point + 8; ++i) { // +8 Посколько в 48 строке в cout String:\" занимает именно 8 символов
-        cout << " ";
+    cout << endl << "String: " << ptrStr  << endl;
+    uint16_t literalStringlong = sizeof("String:") / sizeof(char);
+
+    for(int i = 0; i < point + literalStringlong; ++i) {
     }
     cout << "^" << endl;
 }
 
 
 
-int MStrlen(char *ptrStr) {
+uint32_t MStrlen(char *ptrStr) {
+     if(!ptrStr){
+        return;
+    }
 
-    int size = 0;
+    uint32_t size = 0;
 
-    while(ptrStr[size] != '\0') {
-        size++;
+    while(ptrStr[size++] != '\0') {
     }
 
     return size;
@@ -132,6 +141,9 @@ int MStrlen(char *ptrStr) {
 
 
 int MoveFunc(char *ptrStr,int point,int strSize) {
+     if(!ptrStr){
+        return 0;
+    }
           
     char side;
     int  numOfSteps;
@@ -159,7 +171,7 @@ MoveFuncInputMark:
         goto MoveFuncInputMark;
     }
 
-    
+
 
     return point;
 }
@@ -167,23 +179,28 @@ MoveFuncInputMark:
 
 
 void AddFunc(char *ptrStr,char *ptrBooferStr,int point,int strSize){
+     if(!ptrStr || !ptrBooferStr){
+        return;
+    }
 
     cout << "Enter text: ";
     cin >> ptrBooferStr;
     cout << endl;
     if(MStrlen(ptrBooferStr) >= MAX_STR_SIZE) {
         cout << "Boofer overflow!" << endl;
-        return;
-    }
-
-    InsertFunc(ptrStr,ptrBooferStr,point,strSize);
+    }else{
+        InsertFunc(ptrStr,ptrBooferStr,point,strSize);
+    } 
 }
 
 
 
 void InsertFunc(char *ptrStr,char *ptrBooferStr,int point,int strSize) {
+    if(!ptrStr || !ptrBooferStr){
+        return;
+    }
 
-    int freeSpace = MAX_STR_SIZE - MStrlen(ptrStr) - 1;
+    int freeSpace = MAX_STR_SIZE - strSize;
     int sizeOfBoofer = MStrlen(ptrBooferStr);
     if(sizeOfBoofer >= freeSpace) {
         cout << "String overflow!" << endl;
@@ -193,8 +210,7 @@ void InsertFunc(char *ptrStr,char *ptrBooferStr,int point,int strSize) {
     int numOfChar = strSize - point;
     int inputPoint = numOfChar + point + sizeOfBoofer;
 
-    ptrStr[inputPoint] = '\0';
-    --inputPoint;
+    ptrStr[inputPoint--] = '\0';
     
     int tempPoint = point + numOfChar - 1;
 
@@ -203,12 +219,15 @@ void InsertFunc(char *ptrStr,char *ptrBooferStr,int point,int strSize) {
         ptrStr[inputPoint] = ptrStr[tempPoint];
     }
 
-    for(int t=0; t < sizeOfBoofer; ++t, ++point) {
+    for(uint32_t t=0; t < sizeOfBoofer; ++t, ++point) {
         ptrStr[point] = ptrBooferStr[t];
     }
 }
 
 void DeleteFunc(char *ptrStr,int point, int strSize) {
+    if(!ptrStr) {
+        return;
+    }
 
     int numOfChar;
     int tempPoint = point;
@@ -219,21 +238,17 @@ DeleteFuncInputMark:
     cin >> side;
     cin >> numOfChar;
     cout << endl;
-    if((side == 'l') || (side == 'r')) {
-        if(side == 'l') {
-            point -= numOfChar;
-            if(point < 0) {
-                point = 0;
-            }
+    if(side == 'l') {
+        point -= numOfChar;
+        if(point < 0) {
+            point = 0;
         }
-        else {
-            point += numOfChar;
-            if(point > strSize) {
-                point = strSize;
-            }
-        } 
-    }
-    else {
+    }else if(side == 'r') {
+        point += numOfChar;
+        if(point > strSize) {
+            point = strSize;
+        }
+    }else {
         cout << "Wrong option! Please retry..." << endl;
         goto DeleteFuncInputMark;
     }
@@ -258,6 +273,9 @@ DeleteFuncInputMark:
 
 
 void CopyFunc(char *ptrStr, char *ptrBooferStr, int point, int strSize) {
+    if(!ptrStr || !ptrBooferStr){
+        return;
+    }
 
     char side;
     int  numOfChar;
@@ -267,21 +285,17 @@ CopyFuncInputMark:
     cin >> side;
     cin >> numOfChar;
     cout << endl;
-    if((side == 'l') || (side == 'r')) {
-        if(side == 'l') {
-            point -= numOfChar;
-            if(point < 0) {
-                point = 0;
-            }
+    if(side == 'l') {
+        point -= numOfChar;
+        if(point < 0) {
+            point = 0;
         }
-        else {
-            point += numOfChar;
-            if(point > strSize) {
-                point = strSize;
-            }
-        } 
-    }
-    else {
+    }else if(side == 'r') {
+        point += numOfChar;
+        if(point > strSize) {
+            point = strSize;
+        }
+    }else {
         cout << "Wrong option! Please retry..." << endl;
         goto CopyFuncInputMark;
     }
@@ -304,6 +318,9 @@ CopyFuncInputMark:
 
 
 void CutFunc(char *ptrStr, char *ptrBooferStr, int point, int strSize) {
+    if(!ptrStr || !ptrBooferStr){
+        return;
+    }
 
     char side;
     int  numOfChar;
@@ -313,21 +330,17 @@ CutFuncInputMark:
     cin >> side;
     cin >> numOfChar;
     cout << endl;
-    if((side == 'l') || (side == 'r')) {
-        if(side == 'l') {
-            point -= numOfChar;
-            if(point < 0) {
-                point = 0;
-            }
+    if(side == 'l') {
+        point -= numOfChar;
+        if(point < 0) {
+            point = 0;
         }
-        else {
-            point += numOfChar;
-            if(point > strSize) {
-                point = strSize;
-            }
-        } 
-    }
-    else {
+    }else if(side == 'r') {
+        point += numOfChar;
+        if(point > strSize) {
+            point = strSize;
+        }
+    }else {
         cout << "Wrong option! Please retry..." << endl;
         goto CutFuncInputMark;
     }

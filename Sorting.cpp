@@ -8,18 +8,18 @@ using std::cout;
 using std::cin;
 
 
-void BubbleSort(int *ptrArray, int size);
+void BubbleSort(int *ptrArray, uint32_t size);
 void QuickSort(int *ptrArray,int left,int right);
-void PrintArray(int *ptrArray, int size);
-void BestArrayFill(int *ptrArray, int size);
-void AvgArrayFill(int *ptrArray, int size);
-void WorstArrayFill(int *ptrArray, int size);
-void SelfArrayFill(int *ptrArray, int size);
-void ArrayCopy(int *ptrArray,int *new_ptrArray, int size);
+void PrintArray(int *ptrArray, uint32_t size);
+void BestArrayFill(int *ptrArray, uint32_t size);
+void AvgArrayFill(int *ptrArray, uint32_t size);
+void WorstArrayFill(int *ptrArray, uint32_t size);
+void SelfArrayFill(int *ptrArray, uint32_t size);
+void ArrayCopy(int *ptrArray,int *new_ptrArray, uint32_t size);
 
 int main() {
 
-    int size;
+    uint32_t size;
     cout << "Input size of your array: ";
     cin >> size;
     cout << endl;
@@ -85,25 +85,15 @@ int main() {
 
 
     auto startTime = clock();
-    // cout << "Time before:" << startTime << endl;
     BubbleSort(ptrArray,size);
     auto endTime = clock();
-    // cout << "Time after:" << startTime << endl;
-    cout << endl << "///////////////////////////////////////////////////////"
-         << endl << "////////////////////////Sorted array(BubbleSort)///////"
-         << endl << "///////////////////////////////////////////////////////"
-         << endl;
+
     PrintArray(ptrArray,size);
-    cout << "Bubble Sort time: " << (startTime - endTime) << endl << endl;
+    cout << "Bubble Sort time: " << (endTime-startTime) << endl << endl;
     
     startTime = clock();
     QuickSort(ptrCopyArray,0,size-1);
     endTime = clock();
-    cout << endl << "///////////////////////////////////////////////////////"
-         << endl << "////////////////////////Sorted array(QuickSort)///////"
-         << endl << "///////////////////////////////////////////////////////"
-         << endl;
-    PrintArray(ptrCopyArray,size);
     cout << "Quick Sort time: " << (startTime - endTime) << endl << endl;
 
     delete []ptrArray;
@@ -113,65 +103,63 @@ int main() {
 }
 
 
-void PrintArray(int *ptrArray, int size) {
-    for(int i=0;i<size;++i){
+void PrintArray(int *ptrArray, uint32_t size) {
+    for(uint32_t i=0;i<size;++i){
         cout << ptrArray[i] << ' ';
     }
     cout << endl;
 }
 
 
-void ArrayCopy(int *ptrArray,int *new_ptrArray, int size) {
+void ArrayCopy(int *ptrArray,int *new_ptrArray, uint32_t size) {
 
-    for(int i=0;i<size;++i) {
+    for(uint32_t i=0;i<size;++i) {
         new_ptrArray[i] = ptrArray[i];
     }
 }
 
 
-void BestArrayFill(int *ptrArray, int size) {
+void BestArrayFill(int *ptrArray, uint32_t size) {
 
-    for(int i=0;i<size;++i){
+    for(uint32_t i=0;i<size;++i){
         ptrArray[i] = i;
     }
 }
 
-void WorstArrayFill(int *ptrArray, int size) {
+void WorstArrayFill(int *ptrArray, uint32_t size) {
 
-    for(int i=size,j=0;i>0;--i,j++) {
+    for(int64_t i=size,j=0;i>0;--i,j++) {
         ptrArray[j] = i;
     }
 }
 
-void AvgArrayFill(int *ptrArray, int size) {
+void AvgArrayFill(int *ptrArray, uint32_t size) {
 
     srand(time(NULL));
-    for(int i=0;i<size; i++) {
+    for(uint32_t i=0;i<size; i++) {
         ptrArray[i] = rand()%100;
     }
 }
 
-void SelfArrayFill(int *ptrArray, int size) {
+void SelfArrayFill(int *ptrArray, uint32_t size) {
 
-    for(int i=0;i<size;++i) {
+    for(uint32_t i=0;i<size;++i) {
         cin >> ptrArray[i];
     }
 }
 
 
 
-void BubbleSort(int *ptrArray, int size) {
+void BubbleSort(int *ptrArray, uint32_t size) {
 
-    int temp;
-    int sortLine;
-    for(int i=0; i < size; ++i) {
+    for(uint32_t i=0; i < size; ++i) {
 
-        sortLine = size - i;
+        uint32_t sortLine = size - i;
 
-        for(int j=0; j < sortLine - 1; ++j) {
+        for(uint32_t j=0; j < sortLine - 1; ++j) {
 
             if(ptrArray[j] > ptrArray[j+1]) {
-                temp = ptrArray[j];
+                int temp = ptrArray[j];
                 ptrArray[j] = ptrArray[j+1];
                 ptrArray[j+1] = temp;
             }
@@ -183,13 +171,13 @@ void BubbleSort(int *ptrArray, int size) {
 
 void QuickSort(int *ptrArray,int left,int right) {
 
-    int i = left,
-        j = right, 
-        midle = ptrArray[(i+j)/2], 
-        temp;
+    uint32_t i = left,
+             j = right;
 
 	while(i <= j) {
 
+        int32_t midle = ptrArray[(i+j)/2];
+        
 		while (ptrArray[i] < midle) {
             ++i;
         }
@@ -198,7 +186,7 @@ void QuickSort(int *ptrArray,int left,int right) {
         }
 
 		if (i <= j) {
-			temp = ptrArray[i];
+            int temp = ptrArray[i];
 			ptrArray[i] = ptrArray[j];
 			ptrArray[j] = temp;
 			++i;

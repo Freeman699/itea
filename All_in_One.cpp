@@ -13,6 +13,12 @@ void CaseFunc(char *ptr_strArray, bool mode);
 short IsLowerUpperCaseSymbol(char symbol);
 void ReverseStringFunc(char *ptr_strArray);
 
+enum {
+    LowerCaseChar = 1,
+    UpperCaseChar,
+    AsciiUpLowShift = 32
+};
+
 
 int main() {
 
@@ -29,14 +35,14 @@ StrEnterMark:
     }
 
 
-    char *ptr_strArray = &strArray[0];
-    int answer;
+    char *ptr_strArray = strArray;
+    uint32_t answer;
     enum {
-        SWITCH_EXIT = 0,
-        IS_DIGIT,
+        IS_DIGIT = 1,
         CONVERT_UPPER,
         CONVERT_LOWER,
-        REVERSE_STR
+        REVERSE_STR,
+        SWITCH_EXIT
     };
 
     do {
@@ -46,16 +52,13 @@ StrEnterMark:
             << " 2 - Convert to upper case all letters"    << endl
             << " 3 - Convert to lower case all letters"    << endl
             << " 4 - Reverse string"                       << endl
-            << " 0 - exit"                                 << endl;
+            << " 5 - exit"                                 << endl;
         cin >> answer;
         cout << endl;
 
 
         switch (answer)
         {
-            case SWITCH_EXIT:
-                break;
-
             case IS_DIGIT:
                 DigitFunc(ptr_strArray);
                 break;
@@ -71,9 +74,12 @@ StrEnterMark:
             case REVERSE_STR:
                 ReverseStringFunc(ptr_strArray);
                 break;
-             
+
+            case SWITCH_EXIT:
+                break;
+
             default:
-            cout << "Incorrect option, please retry..." << endl;
+                cout << "Incorrect option, please retry..." << endl;
                 break;
         }
     
@@ -122,25 +128,19 @@ bool IsDigitFunc(char symbol) {
 
 void CaseFunc(char *ptr_strArray, bool mode) {
 
-    short flag;
-
-    if(mode == true) {
+    if(mode) {
         for(unsigned int i=0;ptr_strArray[i];++i) {
 
-            flag = IsLowerUpperCaseSymbol(ptr_strArray[i]);
-
-            if(flag == 1) {
+            if(IsLowerUpperCaseSymbol(ptr_strArray[i]) == LowerCaseChar) {
                 ptr_strArray[i] -= ' ';
             }
         }
     }
 
-    else if(mode == false) {   
+    else {   
         for(unsigned int i=0;ptr_strArray[i];++i) {
 
-            flag = IsLowerUpperCaseSymbol(ptr_strArray[i]);
-
-            if(flag == 2) {
+            if(IsLowerUpperCaseSymbol(ptr_strArray[i]) == UpperCaseChar) {
                 ptr_strArray[i] += ' ';
             }
         }
@@ -156,12 +156,12 @@ short IsLowerUpperCaseSymbol(char symbol) {
     int character = symbol - 'A';	
 
     if(character >= 0 && character <= 25) {
-        return 2;
+        return UpperCaseChar;
     }
 
     character -= ' ';
     if(character >= 0 && character <= 25) {
-        return 1;
+        return LowerCaseChar;
     }
 
     return 0;
@@ -171,10 +171,9 @@ short IsLowerUpperCaseSymbol(char symbol) {
 
 void ReverseStringFunc(char *ptr_strArray) {
 
-    char temp;
     for(int i=0,j=strlen(ptr_strArray)-1; (i != j) || (i < j); ++i, --j) {
-
-        temp = ptr_strArray[i];
+        
+        char temp = ptr_strArray[i];
         ptr_strArray[i] = ptr_strArray[j];
         ptr_strArray[j] = temp;
         cout << endl << "Your string: " << ptr_strArray << endl;
