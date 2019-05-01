@@ -12,28 +12,14 @@ bool BadAllocCheckFunc(ListNode *node) {
 }
 
 
-ListNode* ListAddNode(int32_t enteredKey,ListNode *node) {
+ListNode* ListInsertNode(int32_t enteredKey,ListNode *node) { 
+    if(!node) return node;
 
-    if(!node) {
-        ListNode *tempNode;
-        tempNode = (ListNode*)malloc(sizeof(ListNode));
-        if(!BadAllocCheckFunc(tempNode)) {
-            return nullptr;
-        }
-        tempNode->key = enteredKey;
-        tempNode->nextNode = nullptr;
-        return tempNode;
-    }
+    ListNode *tempNode = (ListNode*)malloc(sizeof(ListNode));
+    if(!BadAllocCheckFunc(tempNode)) return nullptr;
 
-    ListNode *tempNode,
-             *nextElem = node->nextNode;
-
-    tempNode = (ListNode*)malloc(sizeof(ListNode));
-    if(!BadAllocCheckFunc(tempNode)) {
-            return nullptr;
-    }
     tempNode->key = enteredKey;
-    tempNode->nextNode = nextElem;
+    tempNode->nextNode = node->nextNode;
     node->nextNode = tempNode;
 
     return tempNode;
@@ -42,16 +28,10 @@ ListNode* ListAddNode(int32_t enteredKey,ListNode *node) {
 
 ListNode *ListAddInHead(int32_t enteredKey,ListNode *head) {
 
-    if(!head) {
-        return nullptr;
-    }
-    ListNode *tempNode;
-
-    tempNode = (ListNode*)malloc(sizeof(ListNode));
+    ListNode *tempNode = (ListNode*)malloc(sizeof(ListNode));
     if(!BadAllocCheckFunc(tempNode)) {
             return nullptr;
     }
-
     tempNode->key = enteredKey;
     tempNode->nextNode = head;
     head = tempNode;
@@ -59,72 +39,58 @@ ListNode *ListAddInHead(int32_t enteredKey,ListNode *head) {
     return head;
 }
 
-ListNode *ListAddInTail(int32_t enteredKey,ListNode *head) {
 
-    if(!head) {
-        return nullptr;
-    }
+ListNode *ListAddInTail(int32_t enteredKey,ListNode *head) {
+    if(!head) return ListAddInHead(enteredKey,head);
 
     while(head->nextNode) {
         head = head->nextNode;
     }
-    ListNode *tail = ListAddNode(enteredKey,head);
 
-    return tail;
+    ListNode *tempNode = (ListNode*)malloc(sizeof(ListNode));
+    if(!BadAllocCheckFunc(tempNode)) {
+            return nullptr;
+    }
+    head->nextNode = tempNode;
+    tempNode->nextNode = nullptr;
+    tempNode->key = enteredKey;
+
+    return tempNode;
 }
 
 
 void ListFree(ListNode *head) {
-
     if(!head) {
-        return;
-    }else if(head->nextNode) {
-        ListFree(head->nextNode);
+        ;
+    }else {
+        ListNode *temp;
+        while(head) {
+            temp = head;
+            head = head->nextNode;
+            free(temp);
+        }
     }
-
-    free(head);
-
-    return;
 }
 
 
-void ListPrint(ListNode *head) {
-    
+void ListPrint(ListNode *head) {   
     if(!head) {
         std::cout << "List is empty!" << std::endl;
         return;
     }
-
-    uint32_t numOfNode = 0;
+    
+    std::cout << "List: ";
     while(head) {
-        std::cout  << ++numOfNode << "# Node" << " Key:" << head->key << std::endl;
+        std::cout << head->key;
+        if(head->nextNode) std::cout << ", ";
         head=head->nextNode;
     }
     std::cout << std::endl;
 }
 
-ListNode *ListFindNode(uint32_t nodeNum,ListNode *head) {
-
-    if(!head) {
-        return nullptr;
-    }
-
-    uint32_t realNodeNum = 0;
-    while(head) {
-        if( (++realNodeNum) == nodeNum ){
-            return head;
-        }
-        head = head->nextNode;
-    }
-    return nullptr;
-}
-
 ListNode *ListDeleteHead(ListNode *head) {
-
-    if(!head) {
-        return nullptr;
-    }
-
+    if(!head) return head;
+    
     ListNode *temp = head->nextNode;
     head->nextNode = nullptr;
     ListFree(head);
@@ -132,24 +98,28 @@ ListNode *ListDeleteHead(ListNode *head) {
     return temp;
 }
 
-void ListDeleteNode(ListNode *node,ListNode *l_node) {
 
-    if(!node || !l_node) {
-        return;
+ListNode *ListDeleteNode(ListNode *node,ListNode *head) {
+    if(!node || !head) {
+        return nullptr;
+    }else if(node == head) {
+        return ListDeleteHead(head);
     }
-
-    l_node->nextNode = node->nextNode;
+    
+    while(head->nextNode != node) {
+        head=head->nextNode;
+    }
+    head->nextNode = node->nextNode;
     node->nextNode = nullptr;
     ListFree(node);
+    return head;
 }
 
-ListNode *ListDeleteTail(ListNode *head) {
-    
-    if(!head) {
-        return nullptr;
-    }
 
-    if(!head->nextNode) {
+ListNode *ListDeleteTail(ListNode *head) {
+    if(!head) {
+        return head;
+    }else if(!head->nextNode) {
         ListFree(head);
         return nullptr;
     }
@@ -165,19 +135,18 @@ ListNode *ListDeleteTail(ListNode *head) {
     return beforeLastNode;
 }
 
-ListNode *ListFindKey(int32_t enteredKey,ListNode *head,uint32_t &nodeNum) {
 
+ListNode *ListFindKey(int32_t seekKey,ListNode *head) {
     if(!head) {
-        return nullptr;
-    }
-
-    while(head) {
-        ++nodeNum;
-        if(head->key == enteredKey) {
-            return head;
+        ;
+    }else {
+        while(head) {
+            if((head->key) == seekKey) {
+                return head;
+            }
+            head = head->nextNode;
         }
-        head = head->nextNode;
     }
 
-    return nullptr;
+    return head;
 }
