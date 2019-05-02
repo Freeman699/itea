@@ -1,6 +1,38 @@
 #include <cstring>
 
+
+
+bool IsSecondNumBiggerFunc(char FNum[],char SNum[]) {
+    enum {FirstIsBigger,SecondIsBigger,EQUAL = 0};
+    
+    unsigned int firstNumSize = strlen(FNum),
+                 secondNumSize= strlen(SNum);
+
+    if(firstNumSize > secondNumSize) {
+        return FirstIsBigger;
+    }else if(secondNumSize > firstNumSize) {
+        return SecondIsBigger;
+    }else {
+        for(unsigned int i=0;i < strlen(FNum); ++i) {
+            if(FNum[i] > SNum[i]) {
+                return FirstIsBigger;
+            }else if(FNum[i] < SNum[i]) {
+                return SecondIsBigger;
+            }
+        }
+    }
+    return EQUAL;
+}
+
+
+
 char *SumFunc(char FNum[],char SNum[]) {
+
+    if(IsSecondNumBiggerFunc(FNum,SNum)) {
+        char *temp = FNum;
+        FNum = SNum;
+        SNum = temp;
+    }
 
     bool digit = false;
     int i = strlen(FNum) - 1;
@@ -55,8 +87,19 @@ char *SumFunc(char FNum[],char SNum[]) {
 }
 
 
+
 char*  DiffFunc(char FNum[],char SNum[]) {
     
+    bool result_less_then_zero = false;
+
+    if(IsSecondNumBiggerFunc(FNum,SNum)) {
+        char *temp = FNum;
+        FNum = SNum;
+        SNum = temp;
+        result_less_then_zero = true;
+    }
+
+
     bool digit = false;
 
      for(int k = strlen(SNum)-1, i = strlen(FNum)-1;i >= 0;--i, --k) {   
@@ -85,16 +128,21 @@ char*  DiffFunc(char FNum[],char SNum[]) {
         FNum[i] = tempDiff + '0';
     }
 
+
     unsigned int numOfZero=0;
-    for(unsigned int i=0;FNum[i] <= '0';++i) {
+    for(unsigned int i=0;FNum[i] == '0';++i) {
         ++numOfZero;
     }
-
     if(numOfZero>0) {
-        unsigned int shift = (strlen(FNum) - numOfZero);
+        unsigned int shift = (strlen(FNum) - numOfZero + 1);
         memmove(FNum,FNum+numOfZero,shift*sizeof(char));
         FNum[shift] = '\0';
     }
+    if(result_less_then_zero) {
+                size_t shiftSize = sizeof(char) * strlen(FNum);
+                memmove(&FNum[1],&FNum[0],shiftSize);
+                FNum[0] = '-';
+            }
 
     return FNum;
 }

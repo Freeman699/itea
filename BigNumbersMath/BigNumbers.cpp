@@ -20,19 +20,6 @@ bool DigitCheckFunc(char String[]) {
     return false;
 }
 
-bool BiggestNumFunc(char FNum[],char SNum[]) {
-    enum {FirstIsBigger,SecondIsBigger,EQUAL = 0};
-    
-    for(uint32_t i=0;i < strlen(FNum); ++i) {
-        if(FNum[i] > SNum[i]) {
-            return FirstIsBigger;
-        }else if(FNum[i] < SNum[i]) {
-            return SecondIsBigger;
-        }
-    }
-    return EQUAL;
-}
-
 
 void InputStrFunc(char InputString[]) {
     StrEnterMark:
@@ -63,27 +50,13 @@ int main() {
     InputStrFunc(FirstInputString);
     InputStrFunc(SecondInputString);
 
-    uint32_t firstNumLength = strlen(FirstInputString),
-             secondNumLength= strlen(SecondInputString);    
-    bool is_second_bigger_then_first_num;
-    char *Result = nullptr;
-
-    if(firstNumLength > secondNumLength) {
-        is_second_bigger_then_first_num = false;
-    }else if(firstNumLength < secondNumLength) {
-        is_second_bigger_then_first_num = true;
-    }else {
-        is_second_bigger_then_first_num = BiggestNumFunc(FirstInputString,SecondInputString);
-    }
-
     const char *option_str = R"(Please select a number operation:
     1 - The sum of two numbers
     2 - Difference of two numbers
-    3 - Multiplication of numbers(Not yet available)
-    4 - Division numbers(Not yet available)
+    3 - Multiplication of numbers(Not available)
+    4 - Division numbers(Not available)
     5 - Exit)";
     uint16_t answer;
-    bool resultLessThanZero = false;
     enum {SUM = 1,DIFFERENCE,MULTIPLY,DIVISION,EXIT};
     cout << option_str << endl; 
 
@@ -97,31 +70,14 @@ InputOptionAnswerGotoMark:
     switch (answer)
     {
         case SUM:
-            if(!is_second_bigger_then_first_num) {
-               Result = SumFunc(FirstInputString,SecondInputString);
-            }else {
-               Result = SumFunc(SecondInputString,FirstInputString);
-            }
-            cout << "Sum = " << Result << endl;
+            cout << "Sum = " << SumFunc(FirstInputString,SecondInputString) << endl;
             break;
         
         case DIFFERENCE:
-            if(!is_second_bigger_then_first_num) {
-                Result = DiffFunc(FirstInputString,SecondInputString);
-            }else {
-                resultLessThanZero = true;
-                Result = DiffFunc(SecondInputString,FirstInputString);
-            }
-            if(resultLessThanZero) {
-                size_t shiftSize = sizeof(char) * strlen(Result);
-                memmove(&Result[1],&Result[0],shiftSize);
-                Result[0] = '-';
-            }
-                cout << "Difference = " << Result << endl;
+                cout << "Difference = " << DiffFunc(FirstInputString,SecondInputString) << endl;
             break;
         case MULTIPLY:
-            NotAvailable();
-            goto InputOptionAnswerGotoMark;
+            MultiplyFunc(FirstInputString,SecondInputString);
             break;
         case DIVISION:
             NotAvailable();
