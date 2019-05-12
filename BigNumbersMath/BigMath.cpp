@@ -168,10 +168,9 @@ char *MultiplyFunc(char FNum[],char SNum[]) {
     }
     memcpy(boofer,FNum,sizeof(FNum[0])*sizeOfFirst+1);
     char one[] = "1";
-    int cnt = 15;
 
     for(int32_t i =sizeOfSecond-1;i != -1; --i) {
-        while(SNum[0] != '\0' && cnt-- != 0){
+        while(SNum[0] != '\0'){
             SumFunc(FNum,boofer);
             DiffFunc(SNum,one);
         }
