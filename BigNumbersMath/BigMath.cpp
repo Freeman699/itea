@@ -2,9 +2,6 @@
 #include <iostream>
 #include <cmath>
 
-using namespace std;
-
-
 bool IsSecondNumBiggerFunc(char FNum[],char SNum[]) {
     enum {FirstIsBigger,SecondIsBigger,EQUAL = 0};
     
@@ -36,7 +33,7 @@ char *SumFunc(char FNum[],char SNum[]) {
         FNum = SNum;
         SNum = temp;
     }
-
+   
     bool digit = false;
     int i = strlen(FNum) - 1;
 
@@ -61,8 +58,9 @@ char *SumFunc(char FNum[],char SNum[]) {
         FNum[i] = tempSum + '0';
     }
 
+    
     if(digit) {
-        if(i>0) {
+        if(i>=0) {
             for( ; i >=0; --i) {   
 
                 unsigned int  Num = FNum[i] - '0';
@@ -78,12 +76,13 @@ char *SumFunc(char FNum[],char SNum[]) {
     
                 FNum[i] = Num + '0';
             }
+        }    
+        if(digit){
+            for(int t = strlen(FNum); t >= 0; --t) {
+                FNum[t+1] = FNum [t];
+            }
+            FNum[0] = 1 + '0';
         }
-
-        for(int t = strlen(FNum); t >= 0; --t) {
-            FNum[t+1] = FNum [t];
-        }
-        FNum[0] = 1 + '0';
     }
 
     return FNum;
@@ -153,43 +152,31 @@ char*  DiffFunc(char FNum[],char SNum[]) {
 
 
 char *MultiplyFunc(char FNum[],char SNum[]) {
-
     
-    if(!IsSecondNumBiggerFunc(FNum,SNum)) {
+    if(IsSecondNumBiggerFunc(FNum,SNum)) {
         char *temp = FNum;
         FNum = SNum;
         SNum = temp;
     }
     uint32_t sizeOfFirst = strlen(FNum),
-             sizeOfSecond= strlen(SNum),
-             sizeOfBoofer= sizeOfFirst+sizeOfSecond;
-    char *boofer = new(std::nothrow) char[sizeOfBoofer + 1] {};
-          boofer[sizeOfBoofer] = '\0';
+             sizeOfSecond= strlen(SNum);
+
+    char *boofer = new(std::nothrow) char[sizeOfFirst];
     if(!boofer) {
-        std::cout << "WARNING! Bad allocation." << std::endl;
-        return nullptr;
+        std::cout << "WARNING! Bad allocation!" << std::endl;
+        return FNum;
     }
+    memcpy(boofer,FNum,sizeof(FNum[0])*sizeOfFirst+1);
+    char one[] = "1";
+    int cnt = 15;
 
-    for(int32_t i=sizeOfSecond-1,Scnt=0; i >= 0; --i,++Scnt) {
-        int32_t sTemp = SNum[i] - '0',
-                overBoofer = 0;
-
-        for(int32_t j=sizeOfFirst-1,k = sizeOfBoofer-Scnt+1,Fcnt=0; j >= 0; --j, --k, ++Fcnt) {
-          int32_t fTemp = FNum[j] - '0';
-          boofer[k] += sTemp*fTemp*pow(10,Scnt+Fcnt) + overBoofer;
-          cout << sTemp*fTemp*pow(10,Scnt+Fcnt) + overBoofer << endl;
-          
-          while(boofer[k] > 10) {
-              overBoofer += boofer[k]/10;
-              boofer[k] %=10;
-          }  
+    for(int32_t i =sizeOfSecond-1;i != -1; --i) {
+        while(SNum[0] != '\0' && cnt-- != 0){
+            SumFunc(FNum,boofer);
+            DiffFunc(SNum,one);
         }
     }
-    cout << "Boofer:" << boofer << endl;
-    for(uint32_t i=0;i < sizeOfBoofer; ++i) {
-        cout << boofer[i];
-    }
-
-    delete[] boofer;
+    DiffFunc(FNum,boofer);
+    
     return FNum;
 }

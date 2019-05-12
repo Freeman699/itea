@@ -53,7 +53,7 @@ int main() {
     const char *option_str = R"(Please select a number operation:
     1 - The sum of two numbers
     2 - Difference of two numbers
-    3 - Multiplication of numbers(Not available)
+    3 - Multiplication of numbers
     4 - Division numbers(Not available)
     5 - Exit)";
     uint16_t answer;
@@ -72,17 +72,20 @@ InputOptionAnswerGotoMark:
         case SUM:
             cout << "Sum = " << SumFunc(FirstInputString,SecondInputString) << endl;
             break;
-        
+
         case DIFFERENCE:
-                cout << "Difference = " << DiffFunc(FirstInputString,SecondInputString) << endl;
+            cout << "Difference = " << DiffFunc(FirstInputString,SecondInputString) << endl;
             break;
+
         case MULTIPLY:
-            MultiplyFunc(FirstInputString,SecondInputString);
+            cout << "Multiplication = " << MultiplyFunc(FirstInputString,SecondInputString) << endl;
             break;
+            
         case DIVISION:
             NotAvailable();
             goto InputOptionAnswerGotoMark;
             break;
+            
         case EXIT:
             break;
 
