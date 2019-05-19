@@ -1,0 +1,15 @@
+cmake_minimum_required(VERSION 3.14.2)
+
+project(Singly linked list)
+
+set (PROJECT_LINK_LIBS liblog.so)
+
+link_directories(../List)
+
+include_directories(../List)
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+
+add_executable(main main.cpp)
+
+target_link_libraries(main ${PROJECT_LINK_LIBS})
