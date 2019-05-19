@@ -61,8 +61,6 @@ ListNode *ListAddInTail(int32_t enteredKey,ListNode *head) {
 
 void ListFree(ListNode *head) {
     if(!head) {
-        ;
-    }else {
         ListNode *temp;
         while(head) {
             temp = head;
@@ -106,12 +104,16 @@ ListNode *ListDeleteNode(ListNode *node,ListNode *head) {
         return ListDeleteHead(head);
     }
     
-    while(head->nextNode != node) {
+    while(head->nextNode != node && head != nullptr) {
         head=head->nextNode;
     }
-    head->nextNode = node->nextNode;
-    node->nextNode = nullptr;
-    ListFree(node);
+     if(head == nullptr) {
+        std::cerr << "List doesn't contain that node!" << std::endl;
+    }else {
+        head->nextNode = node->nextNode;
+        node->nextNode = nullptr;
+        ListFree(node);
+    }
     return head;
 }
 
@@ -137,9 +139,7 @@ ListNode *ListDeleteTail(ListNode *head) {
 
 
 ListNode *ListFindKey(int32_t seekKey,ListNode *head) {
-    if(!head) {
-        ;
-    }else {
+    if(head) {
         while(head) {
             if((head->key) == seekKey) {
                 return head;
@@ -147,6 +147,5 @@ ListNode *ListFindKey(int32_t seekKey,ListNode *head) {
             head = head->nextNode;
         }
     }
-
     return head;
 }
