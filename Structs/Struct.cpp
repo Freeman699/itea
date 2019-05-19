@@ -5,7 +5,7 @@
 
 bool BadAllocCheckFunc(ListNode *node) {
     if(!node) {
-            std::cout << "WARNING! Bad allocation!" << std::endl;
+            std::cerr << "WARNING! Bad allocation!" << std::endl;
             return false;
         }
     return true;
@@ -60,15 +60,13 @@ ListNode *ListAddInTail(int32_t enteredKey,ListNode *head) {
 
 
 void ListFree(ListNode *head) {
-    if(!head) {
-        ;
-    }else {
+    if(head) {
         ListNode *temp;
         while(head) {
             temp = head;
             head = head->nextNode;
             free(temp);
-        }
+        } 
     }
 }
 
@@ -106,12 +104,16 @@ ListNode *ListDeleteNode(ListNode *node,ListNode *head) {
         return ListDeleteHead(head);
     }
     
-    while(head->nextNode != node) {
+    while(head->nextNode != node && head->nextNode != nullptr) {
         head=head->nextNode;
     }
-    head->nextNode = node->nextNode;
-    node->nextNode = nullptr;
-    ListFree(node);
+    if(head->nextNode == nullptr) {
+        std::cerr << "List doesn't contain that node!" << std::endl;
+    }else {
+        head->nextNode = node->nextNode;
+        node->nextNode = nullptr;
+        ListFree(node);
+    }
     return head;
 }
 
@@ -137,9 +139,7 @@ ListNode *ListDeleteTail(ListNode *head) {
 
 
 ListNode *ListFindKey(int32_t seekKey,ListNode *head) {
-    if(!head) {
-        ;
-    }else {
+    if(head) {
         while(head) {
             if((head->key) == seekKey) {
                 return head;
@@ -147,6 +147,5 @@ ListNode *ListFindKey(int32_t seekKey,ListNode *head) {
             head = head->nextNode;
         }
     }
-
     return head;
 }
