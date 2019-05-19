@@ -1,0 +1,293 @@
+#include <cstring>
+#include <iostream>
+#include <cmath>
+
+static constexpr uint32_t DEFAULT_ACCURACY = 6;
+
+using std::endl;
+using std::cout;
+
+bool IsSecondNumBiggerFunc(char FNum[],char SNum[]) {
+    enum {FirstIsBigger,SecondIsBigger,EQUAL = 0};
+    
+    uint32_t firstNumSize = strlen(FNum),
+             secondNumSize= strlen(SNum);
+
+    if(firstNumSize > secondNumSize) {
+        return FirstIsBigger;
+    }else if(secondNumSize > firstNumSize) {
+        return SecondIsBigger;
+    }else {
+        for(unsigned int i=0;i < strlen(FNum); ++i) {
+            if(FNum[i] > SNum[i]) {
+                return FirstIsBigger;
+            }else if(FNum[i] < SNum[i]) {
+                return SecondIsBigger;
+            }
+        }
+    }
+    return EQUAL;
+}
+
+
+
+char *SumFunc(char FNum[],char SNum[]) {
+
+    if(IsSecondNumBiggerFunc(FNum,SNum)) {
+        char *temp = FNum;
+        FNum = SNum;
+        SNum = temp;
+    }
+   
+    bool digit = false;
+    int i = strlen(FNum) - 1;
+
+    for(int k = strlen(SNum) - 1 ;k >= 0;--i, --k) {   
+
+        unsigned int tempSum = 0,
+                 firstNum = FNum[i] - '0',
+                 secondNum = SNum[k] - '0';
+
+        if(digit) {
+            ++firstNum;
+            digit = false;
+        }
+
+        tempSum = firstNum + secondNum;
+
+        if(tempSum >= 10) {
+            digit = true;
+            tempSum %= 10;
+        }
+        
+        FNum[i] = tempSum + '0';
+    }
+
+    
+    if(digit) {
+        if(i>=0) {
+            for( ; i >=0; --i) {   
+
+                unsigned int  Num = FNum[i] - '0';
+
+                if(digit) {
+                    ++Num;
+                    digit = false;
+                }
+                if(Num >= 10) {
+                    digit = true;
+                    Num %= 10;
+                }
+    
+                FNum[i] = Num + '0';
+            }
+        }    
+        if(digit){
+            for(int t = strlen(FNum); t >= 0; --t) {
+                FNum[t+1] = FNum [t];
+            }
+            FNum[0] = 1 + '0';
+        }
+    }
+
+    return FNum;
+}
+
+
+
+char*  DiffFunc(char FNum[],char SNum[]) {
+    
+    bool result_less_then_zero = false;
+
+    if(IsSecondNumBiggerFunc(FNum,SNum)) {
+        char *temp = FNum;
+        FNum = SNum;
+        SNum = temp;
+        result_less_then_zero = true;
+    }
+
+
+    bool digit = false;
+
+     for(int k = strlen(SNum)-1, i = strlen(FNum)-1;i >= 0;--i, --k) {   
+
+        int tempDiff = 0,
+                firstNum = FNum[i] - '0',
+                secondNum;
+        if(k >=0) {
+            secondNum = SNum[k] - '0';
+        }else {
+            secondNum = 0;
+        }
+
+        if(digit) {
+            --firstNum;
+            digit = false;
+        }
+
+        tempDiff = firstNum - secondNum;
+
+        if(tempDiff < 0) {
+            digit = true;
+            tempDiff += 10;
+        }
+
+        FNum[i] = tempDiff + '0';
+    }
+
+
+    unsigned int numOfZero=0;
+    for(unsigned int i=0;FNum[i] == '0';++i) {
+        ++numOfZero;
+    }
+    if(numOfZero>0) {
+        unsigned int shift = (strlen(FNum) - numOfZero + 1);
+        memmove(FNum,FNum+numOfZero,shift*sizeof(char));
+        FNum[shift] = '\0';
+    }
+    if(result_less_then_zero) {
+                size_t shiftSize = sizeof(char) * strlen(FNum);
+                memmove(&FNum[1],&FNum[0],shiftSize);
+                FNum[0] = '-';
+            }
+
+    return FNum;
+}
+
+
+
+char *MultiplyFunc(char FNum[],char SNum[]) {
+    
+    if(IsSecondNumBiggerFunc(FNum,SNum)) {
+        char *temp = FNum;
+        FNum = SNum;
+        SNum = temp;
+    }
+    if(SNum[0] == '0') {
+        SNum[1] = '\0';
+        return SNum;
+    }
+
+    uint32_t sizeOfFirst = strlen(FNum),
+             sizeOfSecond= strlen(SNum);
+
+    char *boofer = new(std::nothrow) char[sizeOfFirst];
+    if(!boofer) {
+        std::cout << "WARNING! Bad allocation!" << std::endl;
+        return FNum;
+    }
+    memcpy(boofer,FNum,sizeof(FNum[0])*sizeOfFirst+1);
+    char one[] = "1";
+
+    for(int32_t i =sizeOfSecond-1;i != -1; --i) {
+        while(SNum[0] != '\0'){
+            SumFunc(FNum,boofer);
+            DiffFunc(SNum,one);
+        }
+    }
+    DiffFunc(FNum,boofer);
+    
+    return FNum;
+}
+
+
+
+void IntToEmptyCStr(uint32_t &num, char *str) {
+    uint32_t numCnt = 0,
+             tempCnt = num;
+
+    while(tempCnt != 0) {
+        tempCnt /= 10;
+        numCnt++;
+    }
+    
+    while(num != 0) {
+        str[--numCnt] = num%10 + '0';
+        num/=10;
+    }
+}
+
+void IntToEndOfCStr(uint32_t &num, char *str) {
+    uint32_t numCnt = 0,
+             tempCnt = num;
+
+    while(tempCnt != 0) {
+        tempCnt /= 10;
+        numCnt++;
+    }
+
+    uint32_t static iter = 0;
+    if(iter == 0) {
+        while(str[++iter] != '\0');
+    }else iter += numCnt;
+
+    while(num != 0) {
+        str[iter + (--numCnt)] = num%10 + '0';
+        num/=10;
+    }
+    str[iter+1] = '\0';
+}
+
+char *DivFunc(char FNum[],char SNum[]) {
+
+
+    if(SNum[0] == '0') {
+        std::cout << "Division by zero! Undefined behavior!" << std::endl;
+        return FNum;
+    }else if(FNum[0] == '0') {
+        const char *Inf = "INF";
+        memcpy(FNum,Inf,strlen(Inf)*sizeof(char));
+        return FNum;
+    }
+
+    uint32_t sizeOfFirst = strlen(FNum);
+    char *resultBoofer = new(std::nothrow) char[sizeOfFirst+1] {'0','\0'};
+    if(!resultBoofer) {
+        std::cerr << "WARNING! Bad allocation!" << std::endl;
+        return FNum;
+    }
+    uint32_t cnt = 0;
+
+    while(!IsSecondNumBiggerFunc(FNum,SNum)) {
+            ++cnt;
+            FNum = DiffFunc(FNum,SNum);
+    }
+    
+    if(FNum[0] != '\0') {
+        IntToEmptyCStr(cnt,resultBoofer);
+
+        uint32_t iter=0;
+        while(resultBoofer[iter++]!='\0');
+        resultBoofer[--iter] = '.';
+
+        uint32_t accuracyCnt = 0;
+        
+        while(accuracyCnt++ != DEFAULT_ACCURACY && FNum[0] != '\0') {
+            char *ten = new(std::nothrow) char[1000] {'1','0','\0'};
+            if(!ten) {
+            std::cerr << "WARNING! Bad allocation!" << std::endl;
+            return FNum;
+            }          
+
+            FNum = MultiplyFunc(FNum,ten);
+            cnt = 0;
+            while(!IsSecondNumBiggerFunc(FNum,SNum)) {
+                ++cnt;
+                FNum = DiffFunc(FNum,SNum);
+            }
+
+            IntToEndOfCStr(cnt,resultBoofer);
+        }
+        memcpy(FNum,resultBoofer,strlen(resultBoofer)*sizeof(char));
+
+    } else{
+        IntToEmptyCStr(cnt,FNum);
+        // std::cout << "FNum: " << FNum << std::endl;
+    }
+
+    // memcpy(FNum,,strlen(resultBoofer)*sizeof(char));
+
+    delete[] (resultBoofer);
+
+    return FNum;
+}
