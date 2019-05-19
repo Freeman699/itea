@@ -8,11 +8,11 @@ void PrintStrFunc(char *ptrStr, int point);
 uint32_t MStrlen(char *ptrStr);
 bool CheckFunc(char *ptrStr, int strSize);
 int MoveFunc(char *ptrStr, int point, int strSize);
-void AddFunc(char *ptrStr, char *ptrBooferStr, int point, int strSize);
-void InsertFunc(char *ptrStr, char *ptrBooferStr, int point, int strSize);
+void AddFunc(char *ptrStr, char *ptrAddBufferStr, int point, int strSize);
+void InsertFunc(char *ptrStr, char *ptrBufferStr, int point, int strSize);
 void DeleteFunc(char *ptrStr, int point, int strSize);
-void CopyFunc(char *ptrStr, char *ptrBooferStr, int point, int strSize);
-void CutFunc(char *ptrStr, char *ptrBooferStr, int point, int strSize);
+void CopyFunc(char *ptrStr, char *ptrBufferStr, int point, int strSize);
+void CutFunc(char *ptrStr, char *ptrBufferStr, int point, int strSize);
 void HelpFunc();
 
 constexpr unsigned int MAX_STR_SIZE = 100;
@@ -24,8 +24,13 @@ int main() {
     short answer;
     int point = 0;
     uint32_t strSize = 0;
-    char *ptrStr = new char[MAX_STR_SIZE] {'\0'};
-    char *ptrBooferStr = new char[MAX_STR_SIZE] {'\0'};
+    char *ptrStr = new(std::nothrow) char[MAX_STR_SIZE] {'\0'};
+    char *ptrBufferStr = new(std::nothrow) char[MAX_STR_SIZE] {'\0'};
+    char *ptrAddBufferStr = new(std::nothrow) char[MAX_STR_SIZE] {'\0'};
+    if(!ptrStr || !ptrBufferStr || !ptrAddBufferStr) {
+        std::cerr << "WARNING! Bad allocation!" << std::endl;
+        exit(1);
+    }
     ptrStr[0] = '\0';
     enum {
         ADD = 1,
@@ -63,7 +68,8 @@ int main() {
            
             
             case ADD:
-                AddFunc(ptrStr,ptrBooferStr,point,strSize);
+                AddFunc(ptrStr,ptrAddBufferStr,point,strSize);
+                ptrAddBufferStr = new char[MAX_STR_SIZE] {};
                 break;
 
             case DEL:
@@ -71,15 +77,15 @@ int main() {
                 break;
 
             case CPY:
-                CopyFunc(ptrStr,ptrBooferStr,point,strSize);
+                CopyFunc(ptrStr,ptrBufferStr,point,strSize);
                 break;
             
             case CUT:
-                CutFunc(ptrStr,ptrBooferStr,point,strSize);
+                CutFunc(ptrStr,ptrBufferStr,point,strSize);
                 break;
 
             case INS:
-                InsertFunc(ptrStr,ptrBooferStr,point,strSize);
+                InsertFunc(ptrStr,ptrBufferStr,point,strSize);
                 break;
 
             case MOV:
@@ -115,19 +121,20 @@ void PrintStrFunc(char *ptrStr,int point) {
         return;
     }
 
-    cout << endl << "String: " << ptrStr  << endl;
+    cout << endl << "String:" << ptrStr  << endl;
     uint16_t literalStringlong = sizeof("String:") / sizeof(char);
 
-    for(int i = 0; i < point + literalStringlong; ++i) {
+    for(int i = 0; i < point + literalStringlong - 1; ++i) {
+        cout << ' ';
     }
-    cout << "^" << endl;
+    cout << '^' << endl;
 }
 
 
 
 uint32_t MStrlen(char *ptrStr) {
      if(!ptrStr){
-        return;
+        return 0;
     }
 
     uint32_t size = 0;
@@ -178,37 +185,37 @@ MoveFuncInputMark:
 
 
 
-void AddFunc(char *ptrStr,char *ptrBooferStr,int point,int strSize){
-     if(!ptrStr || !ptrBooferStr){
+void AddFunc(char *ptrStr,char *ptrAddBufferStr,int point,int strSize){
+     if(!ptrStr || !ptrAddBufferStr){
         return;
     }
 
     cout << "Enter text: ";
-    cin >> ptrBooferStr;
+    cin >> ptrAddBufferStr;
     cout << endl;
-    if(MStrlen(ptrBooferStr) >= MAX_STR_SIZE) {
-        cout << "Boofer overflow!" << endl;
+    if(MStrlen(ptrAddBufferStr) >= MAX_STR_SIZE) {
+        cout << "Buffer overflow!" << endl;
     }else{
-        InsertFunc(ptrStr,ptrBooferStr,point,strSize);
+        InsertFunc(ptrStr,ptrAddBufferStr,point,strSize);
     } 
 }
 
 
 
-void InsertFunc(char *ptrStr,char *ptrBooferStr,int point,int strSize) {
-    if(!ptrStr || !ptrBooferStr){
+void InsertFunc(char *ptrStr,char *ptrBufferStr,int point,int strSize) {
+    if(!ptrStr || !ptrBufferStr){
         return;
     }
 
     int freeSpace = MAX_STR_SIZE - strSize;
-    int sizeOfBoofer = MStrlen(ptrBooferStr);
-    if(sizeOfBoofer >= freeSpace) {
+    int sizeOfBuffer = MStrlen(ptrBufferStr);
+    if(sizeOfBuffer >= freeSpace) {
         cout << "String overflow!" << endl;
         return;
     }
 
     int numOfChar = strSize - point;
-    int inputPoint = numOfChar + point + sizeOfBoofer;
+    int inputPoint = numOfChar + point + sizeOfBuffer;
 
     ptrStr[inputPoint--] = '\0';
     
@@ -219,8 +226,8 @@ void InsertFunc(char *ptrStr,char *ptrBooferStr,int point,int strSize) {
         ptrStr[inputPoint] = ptrStr[tempPoint];
     }
 
-    for(uint32_t t=0; t < sizeOfBoofer; ++t, ++point) {
-        ptrStr[point] = ptrBooferStr[t];
+    for(uint32_t t=0; t < sizeOfBuffer; ++t, ++point) {
+        ptrStr[point] = ptrBufferStr[t];
     }
 }
 
@@ -254,9 +261,9 @@ DeleteFuncInputMark:
     }
 
     if(point >= tempPoint) {
-        int boofer = tempPoint;
+        int Buffer = tempPoint;
         tempPoint = point;
-        point = boofer;
+        point = Buffer;
     }
 
     int numOfCharTemp = 0;
@@ -272,8 +279,8 @@ DeleteFuncInputMark:
 
 
 
-void CopyFunc(char *ptrStr, char *ptrBooferStr, int point, int strSize) {
-    if(!ptrStr || !ptrBooferStr){
+void CopyFunc(char *ptrStr, char *ptrBufferStr, int point, int strSize) {
+    if(!ptrStr || !ptrBufferStr){
         return;
     }
 
@@ -301,24 +308,24 @@ CopyFuncInputMark:
     }
 
     if(point >= tempPoint) {
-        int boofer = tempPoint;
+        int Buffer = tempPoint;
         tempPoint = point;
-        point = boofer;
+        point = Buffer;
     }
 
 
     int i = 0;
     for( ; point != tempPoint; ++i, ++point) {
 
-        ptrBooferStr[i] = ptrStr[point];
+        ptrBufferStr[i] = ptrStr[point];
     }
-    ptrBooferStr[i] = '\0';
+    ptrBufferStr[i] = '\0';
 }
 
 
 
-void CutFunc(char *ptrStr, char *ptrBooferStr, int point, int strSize) {
-    if(!ptrStr || !ptrBooferStr){
+void CutFunc(char *ptrStr, char *ptrBufferStr, int point, int strSize) {
+    if(!ptrStr || !ptrBufferStr){
         return;
     }
 
@@ -346,9 +353,9 @@ CutFuncInputMark:
     }
 
     if(point >= tempPoint) {
-        int boofer = tempPoint;
+        int Buffer = tempPoint;
         tempPoint = point;
-        point = boofer;
+        point = Buffer;
     }
 
 
@@ -356,9 +363,9 @@ CutFuncInputMark:
     int sPoint = point;
     for( ; point != tempPoint; ++i, ++point) {
 
-        ptrBooferStr[i] = ptrStr[point];
+        ptrBufferStr[i] = ptrStr[point];
     }
-    ptrBooferStr[i] = '\0';
+    ptrBufferStr[i] = '\0';
 
     point = sPoint;
 
